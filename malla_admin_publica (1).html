@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malla Interactiva - Administración Pública</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .semestre {
+      margin-bottom: 30px;
+    }
+    .semestre h2 {
+      margin: 10px 0;
+    }
+    .ramos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .ramo {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      min-width: 180px;
+      text-align: center;
+      transition: background 0.3s;
+    }
+    .bloqueado {
+      background: #ddd;
+      color: #666;
+    }
+    .disponible {
+      background: #fff3cd;
+      color: #000;
+    }
+    .aprobado {
+      background: #c3e6cb;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Interactiva - Administración Pública</h1>
+  <div id="contenedor"></div>
+
+  <script>
+    const ramos = {
+      "Inducción a la Formación Profesional": { semestre: 1, requisitos: [] },
+      "Teoría de la Administración": { semestre: 1, requisitos: [] },
+      "Nociones Generales del Derecho": { semestre: 1, requisitos: [] },
+      "Razonamiento Lógico Matemático": { semestre: 1, requisitos: [] },
+      "Fundamentos de la Ciencia Política": { semestre: 1, requisitos: [] },
+      "Competencias Lecto-Escritoras": { semestre: 1, requisitos: [] },
+
+      "Historia Política e Institucional de Chile": { semestre: 2, requisitos: [] },
+      "Teoría de la Organización": { semestre: 2, requisitos: ["Teoría de la Administración"] },
+      "Derecho Constitucional": { semestre: 2, requisitos: ["Nociones Generales del Derecho"] },
+      "Matemática para la Gestión": { semestre: 2, requisitos: ["Razonamiento Lógico Matemático"] },
+      "Ideologías Políticas": { semestre: 2, requisitos: ["Fundamentos de la Ciencia Política"] },
+      "Herramientas Computacionales para la Gestión": { semestre: 2, requisitos: [] },
+
+      "Administración Pública": { semestre: 3, requisitos: ["Teoría de la Organización"] },
+      "Transparencia y Probidad": { semestre: 3, requisitos: ["Teoría de la Organización"] },
+      "Derecho Administrativo I": { semestre: 3, requisitos: ["Derecho Constitucional"] },
+      "Estadística Administrativa": { semestre: 3, requisitos: ["Matemática para la Gestión"] },
+      "Estado y Gobierno": { semestre: 3, requisitos: ["Ideologías Políticas"] },
+      "Electivo Formación General": { semestre: 3, requisitos: [] },
+
+      "Adm. Pública Chilena": { semestre: 4, requisitos: ["Administración Pública"] },
+      "Módulo Integrador I": { semestre: 4, requisitos: ["Administración Pública"] },
+      "Derecho Administrativo II": { semestre: 4, requisitos: ["Derecho Administrativo I"] },
+      "Microeconomía": { semestre: 4, requisitos: ["Estadística Administrativa"] },
+      "Democracia y Ciudadanía": { semestre: 4, requisitos: ["Estado y Gobierno"] },
+      "Contabilidad General": { semestre: 4, requisitos: ["Estadística Administrativa"] },
+
+      "Gobierno y Administración Regional": { semestre: 5, requisitos: ["Adm. Pública Chilena"] },
+      "Derecho del Trabajo": { semestre: 5, requisitos: ["Derecho Administrativo II"] },
+      "Comportamiento Organizacional": { semestre: 5, requisitos: ["Derecho Administrativo II"] },
+      "Macroeconomía": { semestre: 5, requisitos: ["Microeconomía"] },
+      "Contabilidad General de la Nación": { semestre: 5, requisitos: ["Contabilidad General"] },
+      "Sociología del Desarrollo": { semestre: 5, requisitos: ["Democracia y Ciudadanía"] },
+
+      "Gestión Local y Municipal": { semestre: 6, requisitos: ["Gobierno y Administración Regional"] },
+      "Gestión de Recursos Humanos": { semestre: 6, requisitos: ["Derecho del Trabajo"] },
+      "Instrumentos de Gestión": { semestre: 6, requisitos: ["Contabilidad General de la Nación"] },
+      "Diseño y Formulación de Proyectos": { semestre: 6, requisitos: ["Contabilidad General de la Nación"] },
+      "Finanzas Públicas": { semestre: 6, requisitos: ["Macroeconomía"] },
+      "Inglés Básico Conversacional": { semestre: 6, requisitos: [] },
+
+      "Gestión Estratégica": { semestre: 7, requisitos: ["Gestión Local y Municipal"] },
+      "Gestión del Personal en el Ámbito Público": { semestre: 7, requisitos: ["Gestión de Recursos Humanos"] },
+      "Control de Gestión": { semestre: 7, requisitos: ["Instrumentos de Gestión"] },
+      "Gestión y Evaluación de Proyectos": { semestre: 7, requisitos: ["Diseño y Formulación de Proyectos"] },
+      "Diseño y Formulación de Políticas Públicas": { semestre: 7, requisitos: ["Finanzas Públicas"] },
+      "Inglés Intermedio Conversacional": { semestre: 7, requisitos: ["Inglés Básico Conversacional"] },
+
+      "Metodología de la Investigación Cuantitativa": { semestre: 8, requisitos: [] },
+      "Relaciones Internacionales": { semestre: 8, requisitos: ["Sociología del Desarrollo"] },
+      "Módulo Integrador II": { semestre: 8, requisitos: ["Módulo Integrador I"] },
+      "Sistemas de Información del Estado": { semestre: 8, requisitos: ["Control de Gestión"] },
+      "Gestión e Implementación de Políticas Públicas": { semestre: 8, requisitos: ["Diseño y Formulación de Políticas Públicas"] },
+      "Inglés Avanzado Conversacional": { semestre: 8, requisitos: ["Inglés Intermedio Conversacional"] },
+
+      "Metodología de la Investigación Cualitativa": { semestre: 9, requisitos: ["Metodología de la Investigación Cuantitativa"] },
+      "Taller I": { semestre: 9, requisitos: ["Gestión Estratégica"] },
+      "Taller II": { semestre: 9, requisitos: ["Taller I"] },
+      "Gestión Directiva": { semestre: 9, requisitos: ["Gestión Estratégica"] },
+      "Evaluación de Políticas Públicas": { semestre: 9, requisitos: ["Gestión e Implementación de Políticas Públicas"] },
+      "Electivo Formación General 2": { semestre: 9, requisitos: [] },
+
+      "Seminario": { semestre: 10, requisitos: ["Metodología de la Investigación Cualitativa"] },
+      "Práctica Profesional": { semestre: 10, requisitos: ["Taller II"] }
+    };
+
+    const estado = JSON.parse(localStorage.getItem("estadoMalla")) || {};
+
+    function guardarEstado() {
+      localStorage.setItem("estadoMalla", JSON.stringify(estado));
+    }
+
+    function estaDisponible(nombre) {
+      const reqs = ramos[nombre].requisitos;
+      return reqs.every(r => estado[r] === "aprobado");
+    }
+
+    function render() {
+      const contenedor = document.getElementById("contenedor");
+      contenedor.innerHTML = "";
+      const porSemestre = {};
+
+      for (const [nombre, info] of Object.entries(ramos)) {
+        if (!porSemestre[info.semestre]) porSemestre[info.semestre] = [];
+        porSemestre[info.semestre].push(nombre);
+      }
+
+      Object.keys(porSemestre).sort((a, b) => a - b).forEach(sem => {
+        const divSem = document.createElement("div");
+        divSem.className = "semestre";
+        divSem.innerHTML = `<h2>Semestre ${sem}</h2>`;
+
+        const divRamos = document.createElement("div");
+        divRamos.className = "ramos";
+
+        porSemestre[sem].forEach(nombre => {
+          const div = document.createElement("div");
+          div.className = "ramo";
+          const estadoRamo = estado[nombre];
+          if (estadoRamo === "aprobado") {
+            div.classList.add("aprobado");
+          } else if (estaDisponible(nombre)) {
+            div.classList.add("disponible");
+          } else {
+            div.classList.add("bloqueado");
+          }
+
+          div.innerText = nombre;
+          div.onclick = () => {
+            if (!estaDisponible(nombre) && estado[nombre] !== "aprobado") return;
+            estado[nombre] = estado[nombre] === "aprobado" ? undefined : "aprobado";
+            guardarEstado();
+            render();
+          };
+
+          divRamos.appendChild(div);
+        });
+
+        divSem.appendChild(divRamos);
+        contenedor.appendChild(divSem);
+      });
+    }
+
+    render();
+  </script>
+</body>
+</html>
